@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +25,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserById(Integer id) {
         // 1. Ищем пользователя в базе данных
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден"));
 
         // 2. Преобразуем Entity в DTO (без пароля)
         return UserMapper.toResponseDto(user);
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        return  userRepository.findAll()
+                .stream()
+                .map(UserMapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 }
