@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,5 +38,11 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(UserMapper::toResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponseDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
+        return UserMapper.toResponseDto(user);
     }
 }

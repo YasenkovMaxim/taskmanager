@@ -10,5 +10,7 @@ public interface UserService {
     UserResponseDto getUserById(Integer id);
 
     List<UserResponseDto> getAllUsers();
+
+    UserResponseDto getUserByEmail(String email);
 }
 
