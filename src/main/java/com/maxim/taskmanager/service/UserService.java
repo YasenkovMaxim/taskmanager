@@ -15,5 +15,7 @@ public interface UserService {
     UserResponseDto getUserByEmail(String email);
 
     UserResponseDto createUser(UserCreateDto userDto);
+
+    void deleteUser(Integer id);
 }
 
