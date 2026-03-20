@@ -1,6 +1,8 @@
 package com.maxim.taskmanager.service.impl;
 
+import com.maxim.taskmanager.exception.UserAlreadyExistsException;
 import com.maxim.taskmanager.exception.UserNotFoundException;
+import com.maxim.taskmanager.model.dto.UserCreateDto;
 import com.maxim.taskmanager.model.dto.UserMapper;
 import com.maxim.taskmanager.model.dto.UserResponseDto;
 import com.maxim.taskmanager.model.entity.User;
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        return  userRepository.findAll()
+        return userRepository.findAll()
                 .stream()
                 .map(UserMapper::toResponseDto)
                 .collect(Collectors.toList());
@@ -45,4 +47,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
         return UserMapper.toResponseDto(user);
     }
+
+    @Override
+    @Transactional
+    public UserResponseDto createUser(UserCreateDto userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("Пользователь с email " + userDto.getEmail() + " уже существует");
+        } else {
+            User savedUser = userRepository.save(UserMapper.toEntity(userDto));
+            return UserMapper.toResponseDto(savedUser);
+        }
+    }
+
 }

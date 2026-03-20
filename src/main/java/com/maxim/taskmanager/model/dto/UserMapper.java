@@ -20,4 +20,13 @@ public class UserMapper {
         dto.setAge(user.getAge());
         return dto;
     }
+    public static User toEntity(UserCreateDto dto){
+      User user = new User();
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setAge(dto.getAge());
+        user.setPassword(dto.getPassword());
+        return user;
+    }
 }

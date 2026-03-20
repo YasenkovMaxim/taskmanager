@@ -25,4 +25,17 @@ public class GlobalExceptionHandler {
         // Возвращаем ResponseEntity с кодом 404
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+
+        // Создаём тело ответа с информацией об ошибке
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("error", "Conflict");
+        response.put("message", ex.getMessage());
+
+        // Возвращаем ResponseEntity с кодом 409
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }
