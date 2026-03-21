@@ -11,9 +11,9 @@ public class UserUpdateDto {
 
     private String lastName;
 
-    private int age;
+    private Integer age;
 
     private String email;
 
-    private String password; // может быть null (не обновляем)
+    private String password;
 }

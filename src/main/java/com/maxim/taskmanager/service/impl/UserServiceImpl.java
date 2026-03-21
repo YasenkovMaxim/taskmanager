@@ -5,6 +5,7 @@ import com.maxim.taskmanager.exception.UserNotFoundException;
 import com.maxim.taskmanager.model.dto.UserCreateDto;
 import com.maxim.taskmanager.model.dto.UserMapper;
 import com.maxim.taskmanager.model.dto.UserResponseDto;
+import com.maxim.taskmanager.model.dto.UserUpdateDto;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -65,5 +67,21 @@ public class UserServiceImpl implements UserService {
         } else{
             throw new UserNotFoundException("Пользователь с id: " + id + " не существует");
         }
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDto updateUser(Integer id, UserUpdateDto userDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
+
+        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(userDto.getEmail())) {
+                throw new UserAlreadyExistsException("Пользователь с email " + userDto.getEmail() + " уже существует");
+            }
+        }
+        UserMapper.updateEntity(userDto, user);
+        User updatedUser = userRepository.save(user);
+        return UserMapper.toResponseDto(updatedUser);
     }
 }

@@ -20,13 +20,33 @@ public class UserMapper {
         dto.setAge(user.getAge());
         return dto;
     }
-    public static User toEntity(UserCreateDto dto){
-      User user = new User();
+
+    public static User toEntity(UserCreateDto dto) {
+        User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setAge(dto.getAge());
         user.setPassword(dto.getPassword());
         return user;
+    }
+
+    public static void updateEntity(UserUpdateDto dto, User user) {
+        if(dto.getFirstName() !=null){
+            user.setFirstName(dto.getFirstName());
+        }
+        if(dto.getLastName() !=null) {
+            user.setLastName(dto.getLastName());
+        }
+       if (dto.getEmail() !=null) {
+           user.setEmail(dto.getEmail());
+       }
+
+       if (dto.getAge() !=null) {
+           user.setAge(dto.getAge());
+       }
+        if (dto.getPassword() !=null) {
+            user.setPassword(dto.getPassword());
+        }
     }
 }
