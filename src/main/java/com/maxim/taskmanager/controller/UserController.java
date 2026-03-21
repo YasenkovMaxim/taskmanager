@@ -4,6 +4,7 @@ import com.maxim.taskmanager.model.dto.UserCreateDto;
 import com.maxim.taskmanager.model.dto.UserResponseDto;
 import com.maxim.taskmanager.model.dto.UserUpdateDto;
 import com.maxim.taskmanager.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,19 +45,19 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto) {
         UserResponseDto user = userService.createUser(userCreateDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Integer id, @RequestBody UserUpdateDto userDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Integer id, @Valid @RequestBody UserUpdateDto userDto) {
         UserResponseDto updatedUser = userService.updateUser(id, userDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
