@@ -1,7 +1,6 @@
 package com.maxim.taskmanager.repository;
 
 
-import com.maxim.taskmanager.model.dto.UserMapper;
 import com.maxim.taskmanager.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
