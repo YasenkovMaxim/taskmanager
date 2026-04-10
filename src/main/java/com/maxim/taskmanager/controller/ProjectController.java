@@ -3,6 +3,7 @@ package com.maxim.taskmanager.controller;
 
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectCreateDto;
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectResponseDto;
+import com.maxim.taskmanager.model.dto.ProjectDto.ProjectUpdateDto;
 import com.maxim.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,15 @@ public class ProjectController {
 
         log.info("POST /api/projects - проект создан с id: {}", project.getId());
         return new ResponseEntity<>(project, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectResponseDto> updateProject(
+            @PathVariable Integer id,
+            @Valid @RequestBody ProjectUpdateDto dto) {
+        log.info("PUT /api/projects/{} - обновление проекта", id);
+        ProjectResponseDto updatedProject = projectService.updateProject(id, dto);
+        log.info("PUT /api/projects/{} - проект обновлён", id);
+        return ResponseEntity.ok(updatedProject);
     }
 }

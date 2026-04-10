@@ -5,6 +5,7 @@ import com.maxim.taskmanager.exception.UserNotFoundException;
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectCreateDto;
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectMapper;
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectResponseDto;
+import com.maxim.taskmanager.model.dto.ProjectDto.ProjectUpdateDto;
 import com.maxim.taskmanager.model.entity.Project;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.ProjectRepository;
@@ -43,5 +44,17 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
         log.info("Проект найден: {}", project.getName());
         return ProjectMapper.toResponseDto(project);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponseDto updateProject(Integer id, ProjectUpdateDto dto) {
+        log.info("Обновление проекта с id: {}", id);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
+        ProjectMapper.updateEntity(project, dto);
+        Project updatedProject = projectRepository.save(project);
+        log.info("Проект с id {} обновлён", id);
+        return ProjectMapper.toResponseDto(updatedProject);
     }
 }
