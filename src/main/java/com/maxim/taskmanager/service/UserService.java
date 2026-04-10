@@ -1,9 +1,9 @@
 package com.maxim.taskmanager.service;
 
 
-import com.maxim.taskmanager.model.dto.UserCreateDto;
-import com.maxim.taskmanager.model.dto.UserResponseDto;
-import com.maxim.taskmanager.model.dto.UserUpdateDto;
+import com.maxim.taskmanager.model.dto.UserDto.UserCreateDto;
+import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
+import com.maxim.taskmanager.model.dto.UserDto.UserUpdateDto;
 
 import java.util.List;
 

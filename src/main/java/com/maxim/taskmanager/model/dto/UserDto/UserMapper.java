@@ -1,13 +1,11 @@
-package com.maxim.taskmanager.model.dto;
+package com.maxim.taskmanager.model.dto.UserDto;
 
 
 import com.maxim.taskmanager.model.entity.User;
 
 public class UserMapper {
 
-    /**
-     * Преобразует Entity User в DTO UserResponseDto
-     */
+
     public static UserResponseDto toResponseDto(User user) {
         if (user == null) {
             return null;

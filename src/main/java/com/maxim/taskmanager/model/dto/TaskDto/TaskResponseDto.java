@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto;
+package com.maxim.taskmanager.model.dto.TaskDto;
 
 import com.maxim.taskmanager.model.entity.TaskPriority;
 import com.maxim.taskmanager.model.entity.TaskStatus;

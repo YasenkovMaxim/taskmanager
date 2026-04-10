@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto;
+package com.maxim.taskmanager.model.dto.ProjectDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

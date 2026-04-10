@@ -1,6 +1,5 @@
-package com.maxim.taskmanager.model.dto;
+package com.maxim.taskmanager.model.dto.ProjectDto;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
