@@ -17,10 +17,8 @@ public class TaskCreateDto {
 
     private String description;
 
-    @NotNull
     private TaskStatus status;
 
-    @NotNull
     private TaskPriority priority;
 
     private Instant dueDate;

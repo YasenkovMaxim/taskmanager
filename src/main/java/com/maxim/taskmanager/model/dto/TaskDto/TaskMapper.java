@@ -3,6 +3,8 @@ package com.maxim.taskmanager.model.dto.TaskDto;
 import com.maxim.taskmanager.model.entity.Project;
 import com.maxim.taskmanager.model.entity.Task;
 import com.maxim.taskmanager.model.entity.User;
+import com.maxim.taskmanager.model.dto.TaskDto.TaskResponseDto;
+import com.maxim.taskmanager.model.dto.TaskDto.TaskUpdateDto;
 
 public class TaskMapper {
 
@@ -58,9 +60,6 @@ public class TaskMapper {
         }
         if (dto.getDueDate() != null) {
             task.setDueDate(dto.getDueDate());
-        }
-        if (dto.getAssigneeId() != null) {
-            task.setAssignee(null);
         }
     }
 }
