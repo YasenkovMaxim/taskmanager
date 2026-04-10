@@ -53,4 +53,15 @@ public class GlobalExceptionHandler {
         response.put("errors", errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleProjectNotFound(ProjectNotFoundException ex) {
+        log.warn("Ошибка: {}", ex.getMessage());
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("error", "Not Found");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }
