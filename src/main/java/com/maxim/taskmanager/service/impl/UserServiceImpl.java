@@ -10,15 +10,16 @@ import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
@@ -27,15 +28,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUserById(Integer id) {
-        // 1. Ищем пользователя в базе данных
+        log.info("Поиск пользователя по id: {}", id);
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден"));
-
-        // 2. Преобразуем Entity в DTO (без пароля)
+        log.info("Найден пользователь с id: {}", id);
         return UserMapper.toResponseDto(user);
     }
 
     @Override
     public List<UserResponseDto> getAllUsers() {
+        log.info("Получение списка всех пользователей");
         return userRepository.findAll()
                 .stream()
                 .map(UserMapper::toResponseDto)
@@ -44,17 +45,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUserByEmail(String email) {
+        log.info("Поиск пользователся по email: {}", email);
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
+        log.info("пользователь найден с email: {}", email);
         return UserMapper.toResponseDto(user);
     }
 
     @Override
     @Transactional
     public UserResponseDto createUser(UserCreateDto userDto) {
+        log.info("Создание пользователя с email: {}", userDto.getEmail());
         if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("Пользователь с email " + userDto.getEmail() + " уже существует");
         } else {
             User savedUser = userRepository.save(UserMapper.toEntity(userDto));
+            log.info("Пользователь создан с id: {}", savedUser.getId());
             return UserMapper.toResponseDto(savedUser);
         }
     }
@@ -62,8 +67,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Integer id) {
+        log.info("Попытка удаления пользователя с id: {}", id);
         if(userRepository.existsById(id)){
             userRepository.deleteById(id);
+            log.info("Пользователь с id {} удалён", id);
         } else{
             throw new UserNotFoundException("Пользователь с id: " + id + " не существует");
         }
@@ -72,6 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto updateUser(Integer id, UserUpdateDto userDto) {
+        log.info("Обновление пользователя с id: {}", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
 
@@ -82,6 +90,7 @@ public class UserServiceImpl implements UserService {
         }
         UserMapper.updateEntity(userDto, user);
         User updatedUser = userRepository.save(user);
+        log.info("Пользователь с id {} обновлён", id);
         return UserMapper.toResponseDto(updatedUser);
     }
 }
