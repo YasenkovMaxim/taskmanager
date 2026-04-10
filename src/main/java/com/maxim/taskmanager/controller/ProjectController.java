@@ -19,7 +19,13 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectResponseDto> getProjectById(@PathVariable Integer id) {
+        log.info("GET /api/projects/{} - поиск проекта", id);
+        ProjectResponseDto project = projectService.getProjectById(id);
+        log.info("GET /api/projects/{} - проект найден", id);
+        return new ResponseEntity<>(project, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<ProjectResponseDto> createProject(@Valid @RequestBody ProjectCreateDto dto) {

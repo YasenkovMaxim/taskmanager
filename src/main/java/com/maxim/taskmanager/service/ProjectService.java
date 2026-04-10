@@ -5,4 +5,5 @@ import com.maxim.taskmanager.model.dto.ProjectDto.ProjectResponseDto;
 
 public interface ProjectService {
     ProjectResponseDto createProject(ProjectCreateDto dto);
+    ProjectResponseDto getProjectById(Integer id);
 }

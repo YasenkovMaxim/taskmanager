@@ -1,5 +1,6 @@
 package com.maxim.taskmanager.service.impl;
 
+import com.maxim.taskmanager.exception.ProjectNotFoundException;
 import com.maxim.taskmanager.exception.UserNotFoundException;
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectCreateDto;
 import com.maxim.taskmanager.model.dto.ProjectDto.ProjectMapper;
@@ -27,14 +28,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public ProjectResponseDto createProject(ProjectCreateDto dto) {
         log.info("Создание проекта с названием: {}", dto.getName());
-
         User owner = userRepository.findById(dto.getOwnerId())
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + dto.getOwnerId() + " не найден"));
-
         Project project = ProjectMapper.toEntity(dto, owner);
         Project savedProject = projectRepository.save(project);
-
         log.info("Проект создан с id: {}", savedProject.getId());
         return ProjectMapper.toResponseDto(savedProject);
+    }
+
+    @Override
+    public ProjectResponseDto getProjectById(Integer id) {
+        log.info("Поиск проекта по id: {}", id);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
+        log.info("Проект найден: {}", project.getName());
+        return ProjectMapper.toResponseDto(project);
     }
 }
