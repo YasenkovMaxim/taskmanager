@@ -47,4 +47,12 @@ public class ProjectController {
         log.info("PUT /api/projects/{} - проект обновлён", id);
         return ResponseEntity.ok(updatedProject);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer id) {
+        log.info("DELETE /api/projects/{} - удаление проекта", id);
+        projectService.deleteProject(id);
+        log.info("DELETE /api/projects/{} - проект удалён", id);
+        return ResponseEntity.noContent().build();
+    }
 }

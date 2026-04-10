@@ -8,4 +8,5 @@ public interface ProjectService {
     ProjectResponseDto createProject(ProjectCreateDto dto);
     ProjectResponseDto getProjectById(Integer id);
     ProjectResponseDto updateProject(Integer id, ProjectUpdateDto dto);
+    void deleteProject(Integer id);
 }

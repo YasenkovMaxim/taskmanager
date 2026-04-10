@@ -57,4 +57,15 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Проект с id {} обновлён", id);
         return ProjectMapper.toResponseDto(updatedProject);
     }
+
+    @Override
+    @Transactional
+    public void deleteProject(Integer id) {
+        log.info("Удаление проекта с id: {}", id);
+        if (!projectRepository.existsById(id)) {
+            throw new ProjectNotFoundException("Проект с id " + id + " не найден");
+        }
+        projectRepository.deleteById(id);
+        log.info("Проект с id {} удалён", id);
+    }
 }
