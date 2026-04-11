@@ -7,6 +7,10 @@ import com.maxim.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,11 +42,15 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponseDto>> getAllTasks() {
-        log.info("GET /api/tasks - получение списка всех задач");
-        List<TaskResponseDto> tasks = taskService.getAllTasks();
-        log.info("GET /api/tasks - найдено {} задач", tasks.size());
-        return ResponseEntity.ok(tasks);
+    public ResponseEntity<Page<TaskResponseDto>> getAllTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<TaskResponseDto> tasksPage = taskService.getAllTasks(pageable);
+        return ResponseEntity.ok(tasksPage);
     }
 
     @GetMapping("/project/{projectId}")

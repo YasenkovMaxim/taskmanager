@@ -16,6 +16,8 @@ import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,13 +61,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponseDto> getAllTasks() {
-        log.info("Получение списка всех задач");
-        List<TaskResponseDto> tasks = taskRepository.findAll().stream()
-                .map(TaskMapper::toResponseDto)
-                .toList();
-        log.info("Найдено {} задач", tasks.size());
-        return tasks;
+    public Page<TaskResponseDto> getAllTasks(Pageable pageable) {
+        log.info("Получение задач с пагинацией: страница {}, размер {}, сортировка {}",
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort());
+        Page<TaskResponseDto> tasksPage = taskRepository.findAll(pageable)
+                .map(TaskMapper::toResponseDto);
+        log.info("Найдено {} задач, всего страниц: {}, всего элементов: {}",
+                tasksPage.getNumberOfElements(),
+                tasksPage.getTotalPages(),
+                tasksPage.getTotalElements());
+        return tasksPage;
     }
 
     @Override
