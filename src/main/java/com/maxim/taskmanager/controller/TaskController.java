@@ -45,4 +45,12 @@ public class TaskController {
         log.info("GET /api/tasks - найдено {} задач", tasks.size());
         return ResponseEntity.ok(tasks);
     }
+
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<TaskResponseDto>> getTasksByProjectId(@PathVariable Integer projectId) {
+        log.info("GET /api/tasks/project/{} - получение задач проекта", projectId);
+        List<TaskResponseDto> tasks = taskService.getTasksByProjectId(projectId);
+        log.info("GET /api/tasks/project/{} - найдено {} задач", projectId, tasks.size());
+        return ResponseEntity.ok(tasks);
+    }
 }
