@@ -93,4 +93,12 @@ public class UserServiceImpl implements UserService {
         log.info("Пользователь с id {} обновлён", id);
         return UserMapper.toResponseDto(updatedUser);
     }
+
+    @Override
+    public Integer getUserIdByEmail(String email) {
+        log.info("Поиск id пользователя по email: {}", email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
+        return user.getId();
+    }
 }

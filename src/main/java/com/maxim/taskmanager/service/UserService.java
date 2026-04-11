@@ -20,5 +20,7 @@ public interface UserService {
     void deleteUser(Integer id);
 
     UserResponseDto updateUser(Integer id, UserUpdateDto userDto);
+
+    Integer getUserIdByEmail(String email);
 }
 
