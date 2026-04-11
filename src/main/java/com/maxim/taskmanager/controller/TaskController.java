@@ -72,4 +72,12 @@ public class TaskController {
         log.info("PUT /api/tasks/{} - задача обновлена", id);
         return ResponseEntity.ok(updatedTask);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
+        log.info("DELETE /api/tasks/{} - удаление задачи", id);
+        taskService.deleteTask(id);
+        log.info("DELETE /api/tasks/{} - задача удалена", id);
+        return ResponseEntity.noContent().build();
+    }
 }

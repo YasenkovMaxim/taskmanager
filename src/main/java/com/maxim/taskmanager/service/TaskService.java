@@ -13,4 +13,5 @@ public interface TaskService {
     List<TaskResponseDto> getTasksByProjectId(Integer projectId);
     List<TaskResponseDto> getTasksByAssigneeId(Integer assigneeId);
     TaskResponseDto updateTask(Integer id, TaskUpdateDto dto);
+    void deleteTask(Integer id);
 }

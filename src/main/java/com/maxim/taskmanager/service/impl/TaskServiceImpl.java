@@ -110,4 +110,15 @@ public class TaskServiceImpl implements TaskService {
         log.info("Задача с id {} обновлена", id);
         return TaskMapper.toResponseDto(updatedTask);
     }
+
+    @Override
+    @Transactional
+    public void deleteTask(Integer id) {
+        log.info("Удаление задачи с id: {}", id);
+        if (!taskRepository.existsById(id)) {
+            throw new TaskNotFoundException("Задача с id " + id + " не найдена");
+        }
+        taskRepository.deleteById(id);
+        log.info("Задача с id {} удалена", id);
+    }
 }
