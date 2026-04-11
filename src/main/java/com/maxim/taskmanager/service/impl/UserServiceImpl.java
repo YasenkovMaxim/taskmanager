@@ -11,7 +11,6 @@ import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto getUserById(Integer id) {
@@ -57,15 +55,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDto createUser(UserCreateDto userDto) {
         log.info("Создание пользователя с email: {}", userDto.getEmail());
-        if (userRepository.existsByEmail(userDto.getEmail())) {
-            log.warn("Попытка создать пользователя с существующим email: {}", userDto.getEmail());
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("Пользователь с email " + userDto.getEmail() + " уже существует");
+        } else {
+            User savedUser = userRepository.save(UserMapper.toEntity(userDto));
+            log.info("Пользователь создан с id: {}", savedUser.getId());
+            return UserMapper.toResponseDto(savedUser);
         }
-        User user = UserMapper.toEntity(userDto);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        User savedUser = userRepository.save(user);
-        log.info("Пользователь создан с id: {}", savedUser.getId());
-        return UserMapper.toResponseDto(savedUser);
     }
 
     @Override
