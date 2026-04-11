@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/tasks")
@@ -26,5 +28,21 @@ public class TaskController {
 
         log.info("POST /api/tasks - задача создана с id: {}", task.getId());
         return new ResponseEntity<>(task, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Integer id) {
+        log.info("GET /api/tasks/{} - поиск задачи", id);
+        TaskResponseDto task = taskService.getTaskById(id);
+        log.info("GET /api/tasks/{} - задача найдена", id);
+        return ResponseEntity.ok(task);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TaskResponseDto>> getAllTasks() {
+        log.info("GET /api/tasks - получение списка всех задач");
+        List<TaskResponseDto> tasks = taskService.getAllTasks();
+        log.info("GET /api/tasks - найдено {} задач", tasks.size());
+        return ResponseEntity.ok(tasks);
     }
 }
