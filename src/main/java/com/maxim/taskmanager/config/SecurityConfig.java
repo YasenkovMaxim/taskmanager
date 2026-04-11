@@ -28,7 +28,6 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Публичные эндпоинты
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",

@@ -58,7 +58,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDto createUser(UserCreateDto userDto) {
         log.info("Создание пользователя с email: {}", userDto.getEmail());
-
         if (userRepository.existsByEmail(userDto.getEmail())) {
             log.warn("Попытка создать пользователя с существующим email: {}", userDto.getEmail());
             throw new UserAlreadyExistsException("Пользователь с email " + userDto.getEmail() + " уже существует");

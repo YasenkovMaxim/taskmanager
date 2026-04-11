@@ -36,19 +36,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequest) {
         log.info("POST /api/auth/login - попытка входа для email: {}", loginRequest.getEmail());
-
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
                         loginRequest.getPassword()
                 )
         );
-
         Integer userId = userService.getUserIdByEmail(loginRequest.getEmail());
         String token = jwtService.generateToken(loginRequest.getEmail(), userId);
-
         log.info("POST /api/auth/login - пользователь {} успешно вошёл", loginRequest.getEmail());
-
         return ResponseEntity.ok(new AuthResponseDto(token, "Bearer", System.currentTimeMillis() + 86400000));
     }
 }
