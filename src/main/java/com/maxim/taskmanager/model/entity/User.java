@@ -45,11 +45,6 @@ public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Project> projects = new ArrayList<>();
-    // ДОБАВЬ ЭТО ПОЛЕ
-    @Column(nullable = false)
-
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
 
     private Instant created;
 

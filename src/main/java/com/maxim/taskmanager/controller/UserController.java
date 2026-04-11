@@ -69,21 +69,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         log.info("DELETE /api/users/{} - удаление пользователя", id);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = auth.getName();
-        User userToDelete = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден"));
-        boolean isAdmin = auth.getAuthorities().stream()
-                .anyMatch(granted -> granted.getAuthority().equals("ROLE_ADMIN"));
-        boolean isSelf = userToDelete.getEmail().equals(currentUserEmail);
-
-        if (!isAdmin && !isSelf) {
-            log.warn("Пользователь {} пытается удалить пользователя {}", currentUserEmail, userToDelete.getEmail());
-            throw new RuntimeException("У вас нет прав на удаление этого пользователя");
-        }
         userService.deleteUser(id);
         log.info("DELETE /api/users/{} - пользователь удалён", id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")

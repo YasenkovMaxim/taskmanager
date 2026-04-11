@@ -1,6 +1,5 @@
 package com.maxim.taskmanager.model.dto.UserDto;
 
-import com.maxim.taskmanager.model.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -35,5 +34,4 @@ public class UserCreateDto {
     @Size(min = 6, max = 30)
     private String password;
 
-    private Role role;
 }

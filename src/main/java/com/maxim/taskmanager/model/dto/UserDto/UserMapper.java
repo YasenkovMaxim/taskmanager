@@ -1,7 +1,6 @@
 package com.maxim.taskmanager.model.dto.UserDto;
 
 
-import com.maxim.taskmanager.model.entity.Role;
 import com.maxim.taskmanager.model.entity.User;
 
 public class UserMapper {
@@ -27,11 +26,6 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setAge(dto.getAge());
         user.setPassword(dto.getPassword());
-        if (dto.getRole() != null) {
-            user.setRole(dto.getRole());
-        } else {
-            user.setRole(Role.USER);
-        }
         return user;
     }
 
