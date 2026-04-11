@@ -2,6 +2,7 @@ package com.maxim.taskmanager.controller;
 
 import com.maxim.taskmanager.model.dto.TaskDto.TaskCreateDto;
 import com.maxim.taskmanager.model.dto.TaskDto.TaskResponseDto;
+import com.maxim.taskmanager.model.dto.TaskDto.TaskUpdateDto;
 import com.maxim.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +61,15 @@ public class TaskController {
         List<TaskResponseDto> tasks = taskService.getTasksByAssigneeId(assigneeId);
         log.info("GET /api/tasks/assignee/{} - найдено {} задач", assigneeId, tasks.size());
         return ResponseEntity.ok(tasks);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskResponseDto> updateTask(
+            @PathVariable Integer id,
+            @Valid @RequestBody TaskUpdateDto dto) {
+        log.info("PUT /api/tasks/{} - обновление задачи", id);
+        TaskResponseDto updatedTask = taskService.updateTask(id, dto);
+        log.info("PUT /api/tasks/{} - задача обновлена", id);
+        return ResponseEntity.ok(updatedTask);
     }
 }

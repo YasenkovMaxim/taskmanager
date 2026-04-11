@@ -6,6 +6,7 @@ import com.maxim.taskmanager.exception.UserNotFoundException;
 import com.maxim.taskmanager.model.dto.TaskDto.TaskCreateDto;
 import com.maxim.taskmanager.model.dto.TaskDto.TaskMapper;
 import com.maxim.taskmanager.model.dto.TaskDto.TaskResponseDto;
+import com.maxim.taskmanager.model.dto.TaskDto.TaskUpdateDto;
 import com.maxim.taskmanager.model.entity.Project;
 import com.maxim.taskmanager.model.entity.Task;
 import com.maxim.taskmanager.model.entity.User;
@@ -91,5 +92,22 @@ public class TaskServiceImpl implements TaskService {
                 .toList();
         log.info("Найдено {} задач для пользователя с id: {}", tasks.size(), assigneeId);
         return tasks;
+    }
+
+    @Override
+    @Transactional
+    public TaskResponseDto updateTask(Integer id, TaskUpdateDto dto) {
+        log.info("Обновление задачи с id: {}", id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Задача с id " + id + " не найдена"));
+        if (dto.getAssigneeId() != null) {
+            User assignee = userRepository.findById(dto.getAssigneeId())
+                    .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + dto.getAssigneeId() + " не найден"));
+            task.setAssignee(assignee);
+        }
+        TaskMapper.updateEntity(task, dto);
+        Task updatedTask = taskRepository.save(task);
+        log.info("Задача с id {} обновлена", id);
+        return TaskMapper.toResponseDto(updatedTask);
     }
 }
