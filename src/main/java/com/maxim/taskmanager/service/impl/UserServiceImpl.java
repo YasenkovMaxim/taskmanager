@@ -11,6 +11,8 @@ import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getAllUsers() {
-        log.info("Получение списка всех пользователей");
-        return userRepository.findAll()
-                .stream()
-                .map(UserMapper::toResponseDto)
-                .collect(Collectors.toList());
+    public Page<UserResponseDto> getAllUsers(Pageable pageable) {
+        log.info("Получение пользователей с пагинацией: страница {}, размер {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(UserMapper::toResponseDto);
     }
 
     @Override

@@ -10,6 +10,10 @@ import com.maxim.taskmanager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -43,11 +48,18 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
-        log.info("GET /api/users - получение списка всех пользователей");
-        List<UserResponseDto> users = userService.getAllUsers();
-        log.info("GET /api/users - найдено {} пользователей", users.size());
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<Page<UserResponseDto>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        log.info("GET /api/users - страница: {}, размер: {}, сортировка: {} {}", page, size, sortBy, sortDir);
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UserResponseDto> usersPage = userService.getAllUsers(pageable);
+        log.info("GET /api/users - найдено {} пользователей, всего страниц: {}",
+                usersPage.getNumberOfElements(), usersPage.getTotalPages());
+        return ResponseEntity.ok(usersPage);
     }
 
     @GetMapping("/email/{email}")

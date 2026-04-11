@@ -4,6 +4,8 @@ package com.maxim.taskmanager.service;
 import com.maxim.taskmanager.model.dto.UserDto.UserCreateDto;
 import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
 import com.maxim.taskmanager.model.dto.UserDto.UserUpdateDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -11,7 +13,7 @@ public interface UserService {
 
     UserResponseDto getUserById(Integer id);
 
-    List<UserResponseDto> getAllUsers();
+    Page<UserResponseDto> getAllUsers(Pageable pageable);
 
     UserResponseDto getUserByEmail(String email);
 
