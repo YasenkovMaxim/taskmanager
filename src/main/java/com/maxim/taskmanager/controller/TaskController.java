@@ -24,9 +24,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<TaskResponseDto> createTask(@Valid @RequestBody TaskCreateDto dto) {
         log.info("POST /api/tasks - создание задачи с названием: {}", dto.getTitle());
-
         TaskResponseDto task = taskService.createTask(dto);
-
         log.info("POST /api/tasks - задача создана с id: {}", task.getId());
         return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
