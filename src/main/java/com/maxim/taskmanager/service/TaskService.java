@@ -9,4 +9,5 @@ public interface TaskService {
     TaskResponseDto getTaskById(Integer id);
     List<TaskResponseDto> getAllTasks();
     List<TaskResponseDto> getTasksByProjectId(Integer projectId);
+    List<TaskResponseDto> getTasksByAssigneeId(Integer assigneeId);
 }

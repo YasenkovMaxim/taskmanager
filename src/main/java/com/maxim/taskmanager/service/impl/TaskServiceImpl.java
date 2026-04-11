@@ -79,4 +79,17 @@ public class TaskServiceImpl implements TaskService {
         log.info("Найдено {} задач для проекта с id: {}", tasks.size(), projectId);
         return tasks;
     }
+
+    @Override
+    public List<TaskResponseDto> getTasksByAssigneeId(Integer assigneeId) {
+        log.info("Получение задач пользователя с id: {}", assigneeId);
+        if (!userRepository.existsById(assigneeId)) {
+            throw new UserNotFoundException("Пользователь с id " + assigneeId + " не найден");
+        }
+        List<TaskResponseDto> tasks = taskRepository.findByAssigneeId(assigneeId).stream()
+                .map(TaskMapper::toResponseDto)
+                .toList();
+        log.info("Найдено {} задач для пользователя с id: {}", tasks.size(), assigneeId);
+        return tasks;
+    }
 }
