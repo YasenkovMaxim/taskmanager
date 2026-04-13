@@ -27,11 +27,8 @@ class UserControllerTest {
         UserResponseDto dto = new UserResponseDto();
         dto.setId(1);
         dto.setEmail("test@mail.com");
-
         when(userService.getUserById(1)).thenReturn(dto);
-
         ResponseEntity<UserResponseDto> response = userController.getUserById(1);
-
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().getId());
@@ -41,9 +38,7 @@ class UserControllerTest {
     @Test
     void deleteUser_Success() {
         doNothing().when(userService).deleteUser(1);
-
         ResponseEntity<Void> response = userController.deleteUser(1);
-
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         verify(userService, times(1)).deleteUser(1);
     }
