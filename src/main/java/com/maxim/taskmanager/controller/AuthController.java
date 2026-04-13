@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -27,15 +27,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserCreateDto userDto) {
-        log.info("POST /api/auth/register - регистрация пользователя с email: {}", userDto.getEmail());
+        log.info("POST /auth/register - регистрация пользователя с email: {}", userDto.getEmail());
         UserResponseDto createdUser = userService.createUser(userDto);
-        log.info("POST /api/auth/register - пользователь зарегистрирован с id: {}", createdUser.getId());
+        log.info("POST /auth/register - пользователь зарегистрирован с id: {}", createdUser.getId());
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequest) {
-        log.info("POST /api/auth/login - попытка входа для email: {}", loginRequest.getEmail());
+        log.info("POST /auth/login - попытка входа для email: {}", loginRequest.getEmail());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -44,7 +44,7 @@ public class AuthController {
         );
         Integer userId = userService.getUserIdByEmail(loginRequest.getEmail());
         String token = jwtService.generateToken(loginRequest.getEmail(), userId);
-        log.info("POST /api/auth/login - пользователь {} успешно вошёл", loginRequest.getEmail());
+        log.info("POST /auth/login - пользователь {} успешно вошёл", loginRequest.getEmail());
         return ResponseEntity.ok(new AuthResponseDto(token, "Bearer", System.currentTimeMillis() + 86400000));
     }
 }

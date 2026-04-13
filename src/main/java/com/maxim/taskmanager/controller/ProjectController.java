@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/projects")
 @RequiredArgsConstructor
 public class ProjectController {
 
@@ -22,17 +22,17 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponseDto> getProjectById(@PathVariable Integer id) {
-        log.info("GET /api/projects/{} - поиск проекта", id);
+        log.info("GET /projects/{} - поиск проекта", id);
         ProjectResponseDto project = projectService.getProjectById(id);
-        log.info("GET /api/projects/{} - проект найден", id);
+        log.info("GET projects/{} - проект найден", id);
         return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<ProjectResponseDto> createProject(@Valid @RequestBody ProjectCreateDto dto) {
-        log.info("POST /api/projects - создание проекта с названием: {}", dto.getName());
+        log.info("POST projects - создание проекта с названием: {}", dto.getName());
         ProjectResponseDto project = projectService.createProject(dto);
-        log.info("POST /api/projects - проект создан с id: {}", project.getId());
+        log.info("POST /projects - проект создан с id: {}", project.getId());
         return new ResponseEntity<>(project, HttpStatus.CREATED);
     }
 
@@ -40,17 +40,17 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseDto> updateProject(
             @PathVariable Integer id,
             @Valid @RequestBody ProjectUpdateDto dto) {
-        log.info("PUT /api/projects/{} - обновление проекта", id);
+        log.info("PUT /projects/{} - обновление проекта", id);
         ProjectResponseDto updatedProject = projectService.updateProject(id, dto);
-        log.info("PUT /api/projects/{} - проект обновлён", id);
+        log.info("PUT /projects/{} - проект обновлён", id);
         return ResponseEntity.ok(updatedProject);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable Integer id) {
-        log.info("DELETE /api/projects/{} - удаление проекта", id);
+        log.info("DELETE /projects/{} - удаление проекта", id);
         projectService.deleteProject(id);
-        log.info("DELETE /api/projects/{} - проект удалён", id);
+        log.info("DELETE /projects/{} - проект удалён", id);
         return ResponseEntity.noContent().build();
     }
 }

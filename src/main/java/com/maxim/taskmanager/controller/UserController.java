@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -35,9 +35,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Integer id) {
-        log.info("GET /api/users/{} - поиск пользователя по id", id);
+        log.info("GET /users/{} - поиск пользователя по id", id);
         UserResponseDto user = userService.getUserById(id);
-        log.info("GET /api/users/{} - пользователь найден", id);
+        log.info("GET /users/{} - пользователь найден", id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -47,44 +47,44 @@ public class UserController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        log.info("GET /api/users - страница: {}, размер: {}, сортировка: {} {}", page, size, sortBy, sortDir);
+        log.info("GET /users - страница: {}, размер: {}, сортировка: {} {}", page, size, sortBy, sortDir);
         Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<UserResponseDto> usersPage = userService.getAllUsers(pageable);
-        log.info("GET /api/users - найдено {} пользователей, всего страниц: {}",
+        log.info("GET /users - найдено {} пользователей, всего страниц: {}",
                 usersPage.getNumberOfElements(), usersPage.getTotalPages());
         return ResponseEntity.ok(usersPage);
     }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
-        log.info("GET /api/users/email/{} - поиск пользователя по email", email);
+        log.info("GET /users/email/{} - поиск пользователя по email", email);
         UserResponseDto user = userService.getUserByEmail(email);
-        log.info("GET /api/users/email/{} - пользователь найден", email);
+        log.info("GET /users/email/{} - пользователь найден", email);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto) {
-        log.info("POST /api/users - создание пользователя с email: {}", userCreateDto.getEmail());
+        log.info("POST /users - создание пользователя с email: {}", userCreateDto.getEmail());
         UserResponseDto user = userService.createUser(userCreateDto);
-        log.info("POST /api/users - пользователь создан с id: {}", user.getId());
+        log.info("POST /users - пользователь создан с id: {}", user.getId());
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        log.info("DELETE /api/users/{} - удаление пользователя", id);
+        log.info("DELETE /users/{} - удаление пользователя", id);
         userService.deleteUser(id);
-        log.info("DELETE /api/users/{} - пользователь удалён", id);
+        log.info("DELETE /users/{} - пользователь удалён", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Integer id, @Valid @RequestBody UserUpdateDto userDto) {
-        log.info("PUT /api/users/{} - обновление пользователя", id);
+        log.info("PUT /users/{} - обновление пользователя", id);
         UserResponseDto updatedUser = userService.updateUser(id, userDto);
-        log.info("PUT /api/users/{} - пользователь обновлён", id);
+        log.info("PUT /users/{} - пользователь обновлён", id);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 }

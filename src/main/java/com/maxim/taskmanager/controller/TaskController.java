@@ -19,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -27,17 +27,17 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskResponseDto> createTask(@Valid @RequestBody TaskCreateDto dto) {
-        log.info("POST /api/tasks - создание задачи с названием: {}", dto.getTitle());
+        log.info("POST /tasks - создание задачи с названием: {}", dto.getTitle());
         TaskResponseDto task = taskService.createTask(dto);
-        log.info("POST /api/tasks - задача создана с id: {}", task.getId());
+        log.info("POST /tasks - задача создана с id: {}", task.getId());
         return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Integer id) {
-        log.info("GET /api/tasks/{} - поиск задачи", id);
+        log.info("GET /tasks/{} - поиск задачи", id);
         TaskResponseDto task = taskService.getTaskById(id);
-        log.info("GET /api/tasks/{} - задача найдена", id);
+        log.info("GET /tasks/{} - задача найдена", id);
         return ResponseEntity.ok(task);
     }
 
@@ -55,17 +55,17 @@ public class TaskController {
 
     @GetMapping("/project/{projectId}")
     public ResponseEntity<List<TaskResponseDto>> getTasksByProjectId(@PathVariable Integer projectId) {
-        log.info("GET /api/tasks/project/{} - получение задач проекта", projectId);
+        log.info("GET /tasks/project/{} - получение задач проекта", projectId);
         List<TaskResponseDto> tasks = taskService.getTasksByProjectId(projectId);
-        log.info("GET /api/tasks/project/{} - найдено {} задач", projectId, tasks.size());
+        log.info("GET /tasks/project/{} - найдено {} задач", projectId, tasks.size());
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/assignee/{assigneeId}")
     public ResponseEntity<List<TaskResponseDto>> getTasksByAssigneeId(@PathVariable Integer assigneeId) {
-        log.info("GET /api/tasks/assignee/{} - получение задач пользователя", assigneeId);
+        log.info("GET /tasks/assignee/{} - получение задач пользователя", assigneeId);
         List<TaskResponseDto> tasks = taskService.getTasksByAssigneeId(assigneeId);
-        log.info("GET /api/tasks/assignee/{} - найдено {} задач", assigneeId, tasks.size());
+        log.info("GET /tasks/assignee/{} - найдено {} задач", assigneeId, tasks.size());
         return ResponseEntity.ok(tasks);
     }
 
@@ -73,17 +73,17 @@ public class TaskController {
     public ResponseEntity<TaskResponseDto> updateTask(
             @PathVariable Integer id,
             @Valid @RequestBody TaskUpdateDto dto) {
-        log.info("PUT /api/tasks/{} - обновление задачи", id);
+        log.info("PUT /tasks/{} - обновление задачи", id);
         TaskResponseDto updatedTask = taskService.updateTask(id, dto);
-        log.info("PUT /api/tasks/{} - задача обновлена", id);
+        log.info("PUT /tasks/{} - задача обновлена", id);
         return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
-        log.info("DELETE /api/tasks/{} - удаление задачи", id);
+        log.info("DELETE /tasks/{} - удаление задачи", id);
         taskService.deleteTask(id);
-        log.info("DELETE /api/tasks/{} - задача удалена", id);
+        log.info("DELETE /tasks/{} - задача удалена", id);
         return ResponseEntity.noContent().build();
     }
 }
