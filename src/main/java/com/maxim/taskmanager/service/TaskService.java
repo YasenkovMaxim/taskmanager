@@ -10,10 +10,16 @@ import java.util.List;
 
 public interface TaskService {
     TaskResponseDto createTask(TaskCreateDto dto);
+
     TaskResponseDto getTaskById(Integer id);
+
     Page<TaskResponseDto> getAllTasks(Pageable pageable);
+
     List<TaskResponseDto> getTasksByProjectId(Integer projectId);
+
     List<TaskResponseDto> getTasksByAssigneeId(Integer assigneeId);
+
     TaskResponseDto updateTask(Integer id, TaskUpdateDto dto);
+
     void deleteTask(Integer id);
 }

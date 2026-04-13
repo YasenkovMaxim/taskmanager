@@ -1,4 +1,5 @@
 package com.maxim.taskmanager.config;
+
 import com.maxim.taskmanager.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

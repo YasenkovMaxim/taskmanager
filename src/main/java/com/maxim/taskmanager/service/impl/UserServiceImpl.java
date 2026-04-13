@@ -17,10 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -73,10 +69,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(Integer id) {
         log.info("Попытка удаления пользователя с id: {}", id);
-        if(userRepository.existsById(id)){
+        if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             log.info("Пользователь с id {} удалён", id);
-        } else{
+        } else {
             throw new UserNotFoundException("Пользователь с id: " + id + " не существует");
         }
     }

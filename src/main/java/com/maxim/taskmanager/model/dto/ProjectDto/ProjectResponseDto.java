@@ -2,6 +2,7 @@ package com.maxim.taskmanager.model.dto.ProjectDto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
 @Data

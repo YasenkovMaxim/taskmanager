@@ -4,6 +4,7 @@ import com.maxim.taskmanager.model.entity.TaskPriority;
 import com.maxim.taskmanager.model.entity.TaskStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
 @Data

@@ -33,5 +33,4 @@ public class UserCreateDto {
     @NotBlank
     @Size(min = 6, max = 30)
     private String password;
-
 }
