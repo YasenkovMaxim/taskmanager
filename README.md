@@ -86,22 +86,12 @@ JWT аутентификация
 
 Swagger документация
 
-Actuator мониторинг
 
 Валидация входных данных
 
 Пагинация и сортировка
 
-Unit тесты
+Автор:
 
-Docker + docker-compose
-
-Email уведомления
-
-Фронтенд на React
-
-Команда проекта
-
-Максим Ясенков — Java Developer
-GitHub: https://github.com/yourusername
-Email: maksim@example.com
+Максим Ясенков 
+GitHub: https://github.com/YasenkovMaxim
