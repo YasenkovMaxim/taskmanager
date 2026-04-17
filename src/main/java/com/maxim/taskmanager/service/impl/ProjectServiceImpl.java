@@ -46,6 +46,11 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Поиск проекта по id: {}", id);
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != project.getOwner().getId()) {
+            log.warn("Пользователь {} пытается просмотреть проект {}", currentUser.getEmail(), project.getName());
+            throw new RuntimeException("У вас нет прав на просмотр этого проекта");
+        }
         log.info("Проект найден: {}", project.getName());
         return ProjectMapper.toResponseDto(project);
     }
@@ -54,6 +59,10 @@ public class ProjectServiceImpl implements ProjectService {
     public Page<ProjectResponseDto> getAllProjects(Pageable pageable) {
         log.info("Получение проектов с пагинацией: страница {}, размер {}",
                 pageable.getPageNumber(), pageable.getPageSize());
+        if (!securityUtils.isAdmin()) {
+            log.warn("Пользователь {} пытается получить список всех проектов", securityUtils.getCurrentUser().getEmail());
+            throw new RuntimeException("У вас нет прав на просмотр всех проектов");
+        }
         Page<Project> projectsPage = projectRepository.findAll(pageable);
         log.info("Найдено {} проектов, всего страниц: {}, всего элементов: {}",
                 projectsPage.getNumberOfElements(),
@@ -68,6 +77,11 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Обновление проекта с id: {}", id);
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != project.getOwner().getId()) {
+            log.warn("Пользователь {} пытается обновить проект {}", currentUser.getEmail(), project.getName());
+            throw new RuntimeException("У вас нет прав на обновление этого проекта");
+        }
         ProjectMapper.updateEntity(project, dto);
         Project updatedProject = projectRepository.save(project);
         log.info("Проект с id {} обновлён", id);
