@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto.ProjectDto;
+package com.maxim.taskmanager.model.dto.projectDto;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;

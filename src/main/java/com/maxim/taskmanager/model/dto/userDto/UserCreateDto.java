@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto.UserDto;
+package com.maxim.taskmanager.model.dto.userDto;
 
 import com.maxim.taskmanager.model.entity.Role;
 import io.swagger.v3.oas.annotations.media.Schema;

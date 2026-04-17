@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto.UserDto;
+package com.maxim.taskmanager.model.dto.userDto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;

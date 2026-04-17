@@ -1,8 +1,8 @@
 package com.maxim.taskmanager.controller;
 
-import com.maxim.taskmanager.model.dto.TaskDto.TaskCreateDto;
-import com.maxim.taskmanager.model.dto.TaskDto.TaskResponseDto;
-import com.maxim.taskmanager.model.dto.TaskDto.TaskUpdateDto;
+import com.maxim.taskmanager.model.dto.taskDto.TaskCreateDto;
+import com.maxim.taskmanager.model.dto.taskDto.TaskResponseDto;
+import com.maxim.taskmanager.model.dto.taskDto.TaskUpdateDto;
 import com.maxim.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

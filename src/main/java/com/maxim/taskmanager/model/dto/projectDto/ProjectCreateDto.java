@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto.ProjectDto;
+package com.maxim.taskmanager.model.dto.projectDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

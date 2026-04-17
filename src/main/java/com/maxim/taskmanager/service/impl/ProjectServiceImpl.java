@@ -2,10 +2,10 @@ package com.maxim.taskmanager.service.impl;
 
 import com.maxim.taskmanager.exception.ProjectNotFoundException;
 import com.maxim.taskmanager.exception.UserNotFoundException;
-import com.maxim.taskmanager.model.dto.ProjectDto.ProjectCreateDto;
-import com.maxim.taskmanager.model.dto.ProjectDto.ProjectMapper;
-import com.maxim.taskmanager.model.dto.ProjectDto.ProjectResponseDto;
-import com.maxim.taskmanager.model.dto.ProjectDto.ProjectUpdateDto;
+import com.maxim.taskmanager.model.dto.projectDto.ProjectCreateDto;
+import com.maxim.taskmanager.model.dto.projectDto.ProjectMapper;
+import com.maxim.taskmanager.model.dto.projectDto.ProjectResponseDto;
+import com.maxim.taskmanager.model.dto.projectDto.ProjectUpdateDto;
 import com.maxim.taskmanager.model.entity.Project;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.ProjectRepository;

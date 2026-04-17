@@ -1,6 +1,6 @@
 package com.maxim.taskmanager.controller;
 
-import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
+import com.maxim.taskmanager.model.dto.userDto.UserResponseDto;
 import com.maxim.taskmanager.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

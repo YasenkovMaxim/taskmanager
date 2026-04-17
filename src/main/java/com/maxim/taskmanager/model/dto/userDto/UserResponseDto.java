@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto.UserDto;
+package com.maxim.taskmanager.model.dto.userDto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -2,10 +2,10 @@ package com.maxim.taskmanager.service.impl;
 
 import com.maxim.taskmanager.exception.UserAlreadyExistsException;
 import com.maxim.taskmanager.exception.UserNotFoundException;
-import com.maxim.taskmanager.model.dto.UserDto.UserCreateDto;
-import com.maxim.taskmanager.model.dto.UserDto.UserMapper;
-import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
-import com.maxim.taskmanager.model.dto.UserDto.UserUpdateDto;
+import com.maxim.taskmanager.model.dto.userDto.UserCreateDto;
+import com.maxim.taskmanager.model.dto.userDto.UserMapper;
+import com.maxim.taskmanager.model.dto.userDto.UserResponseDto;
+import com.maxim.taskmanager.model.dto.userDto.UserUpdateDto;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.security.SecurityUtils;

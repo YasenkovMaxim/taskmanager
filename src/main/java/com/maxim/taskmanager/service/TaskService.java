@@ -1,8 +1,8 @@
 package com.maxim.taskmanager.service;
 
-import com.maxim.taskmanager.model.dto.TaskDto.TaskCreateDto;
-import com.maxim.taskmanager.model.dto.TaskDto.TaskResponseDto;
-import com.maxim.taskmanager.model.dto.TaskDto.TaskUpdateDto;
+import com.maxim.taskmanager.model.dto.taskDto.TaskCreateDto;
+import com.maxim.taskmanager.model.dto.taskDto.TaskResponseDto;
+import com.maxim.taskmanager.model.dto.taskDto.TaskUpdateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

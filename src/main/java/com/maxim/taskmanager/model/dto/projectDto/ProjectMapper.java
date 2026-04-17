@@ -1,4 +1,4 @@
-package com.maxim.taskmanager.model.dto.ProjectDto;
+package com.maxim.taskmanager.model.dto.projectDto;
 
 import com.maxim.taskmanager.model.entity.Project;
 import com.maxim.taskmanager.model.entity.User;
@@ -33,7 +33,6 @@ public class ProjectMapper {
         project.setOwner(owner);
         return project;
     }
-
 
     public static void updateEntity(Project project, ProjectUpdateDto dto) {
         if (dto.getName() != null) {

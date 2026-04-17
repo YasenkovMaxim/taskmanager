@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AuthResponseDto {
     private String accessToken;
-    private String tokenType = "Bearer";
+    private static final String tokenType = "Bearer";
     private Long expiresAt;
 }
