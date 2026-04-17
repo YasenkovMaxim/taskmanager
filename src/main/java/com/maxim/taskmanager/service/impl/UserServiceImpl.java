@@ -8,12 +8,10 @@ import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
 import com.maxim.taskmanager.model.dto.UserDto.UserUpdateDto;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.UserRepository;
-import com.maxim.taskmanager.security.JwtAuthenticationFilter;
 import com.maxim.taskmanager.security.SecurityUtils;
 import com.maxim.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.service.SecurityService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +31,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserById(Integer id) {
         log.info("Поиск пользователя по id: {}", id);
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != id) {
+            throw new RuntimeException("У вас нет прав на просмотр этого пользователя");
+        }
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден"));
         log.info("Найден пользователь с id: {}", id);
         return UserMapper.toResponseDto(user);
@@ -42,6 +44,10 @@ public class UserServiceImpl implements UserService {
     public Page<UserResponseDto> getAllUsers(Pageable pageable) {
         log.info("Получение пользователей с пагинацией: страница {}, размер {}",
                 pageable.getPageNumber(), pageable.getPageSize());
+        if (!securityUtils.isAdmin()) {
+            log.warn("Пользователь {} пытается получить список всех пользователей", securityUtils.getCurrentUser().getEmail());
+            throw new RuntimeException("У вас нет прав на просмотр всех пользователей");
+        }
         Page<User> usersPage = userRepository.findAll(pageable);
         return usersPage.map(UserMapper::toResponseDto);
     }
@@ -49,6 +55,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserByEmail(String email) {
         log.info("Поиск пользователся по email: {}", email);
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && !currentUser.getEmail().equals(email)) {
+            throw new RuntimeException("У вас нет прав");
+        }
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
         log.info("пользователь найден с email: {}", email);
         return UserMapper.toResponseDto(user);
@@ -88,6 +98,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDto updateUser(Integer id, UserUpdateDto userDto) {
         log.info("Обновление пользователя с id: {}", id);
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != id) {
+            log.warn("Пользователь {} пытается обновить пользователя {}", currentUser.getEmail(), id);
+            throw new RuntimeException("У вас нет прав на обновление этого пользователя");
+        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
 
