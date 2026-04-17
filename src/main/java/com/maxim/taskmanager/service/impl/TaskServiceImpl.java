@@ -41,6 +41,11 @@ public class TaskServiceImpl implements TaskService {
         log.info("Создание задачи с названием: {}", dto.getTitle());
         Project project = projectRepository.findById(dto.getProjectId())
                 .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + dto.getProjectId() + " не найден"));
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != project.getOwner().getId()) {
+            log.warn("Пользователь {} пытается создать задачу в проекте {}", currentUser.getEmail(), project.getName());
+            throw new RuntimeException("У вас нет прав на создание задач в этом проекте");
+        }
         User assignee = null;
         if (dto.getAssigneeId() != null) {
             assignee = userRepository.findById(dto.getAssigneeId())
@@ -57,6 +62,11 @@ public class TaskServiceImpl implements TaskService {
         log.info("Поиск задачи по id: {}", id);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Задача с id " + id + " не найдена"));
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != task.getAssignee().getId()) {
+            log.warn("Пользователь {} пытается просмотреть задачу {}", currentUser.getEmail(), task.getTitle());
+            throw new RuntimeException("У вас нет прав на просмотр этой задачи");
+        }
         log.info("Задача найдена: {}", task.getTitle());
         return TaskMapper.toResponseDto(task);
     }
@@ -67,6 +77,10 @@ public class TaskServiceImpl implements TaskService {
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSort());
+        if (!securityUtils.isAdmin()) {
+            log.warn("Пользователь {} пытается получить список всех задач", securityUtils.getCurrentUser().getEmail());
+            throw new RuntimeException("У вас нет прав на просмотр всех задач");
+        }
         Page<TaskResponseDto> tasksPage = taskRepository.findAll(pageable)
                 .map(TaskMapper::toResponseDto);
         log.info("Найдено {} задач, всего страниц: {}, всего элементов: {}",
@@ -79,8 +93,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskResponseDto> getTasksByProjectId(Integer projectId) {
         log.info("Получение задач проекта с id: {}", projectId);
-        if (!projectRepository.existsById(projectId)) {
-            throw new ProjectNotFoundException("Проект с id " + projectId + " не найден");
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + projectId + " не найден"));
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != project.getOwner().getId()) {
+            log.warn("Пользователь {} пытается просмотреть задачи проекта {}", currentUser.getEmail(), project.getName());
+            throw new RuntimeException("У вас нет прав на просмотр задач этого проекта");
         }
         List<TaskResponseDto> tasks = taskRepository.findByProjectId(projectId).stream()
                 .map(TaskMapper::toResponseDto)
@@ -92,6 +110,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskResponseDto> getTasksByAssigneeId(Integer assigneeId) {
         log.info("Получение задач пользователя с id: {}", assigneeId);
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != assigneeId) {
+            log.warn("Пользователь {} пытается просмотреть задачи пользователя {}", currentUser.getEmail(), assigneeId);
+            throw new RuntimeException("У вас нет прав на просмотр задач этого пользователя");
+        }
         if (!userRepository.existsById(assigneeId)) {
             throw new UserNotFoundException("Пользователь с id " + assigneeId + " не найден");
         }
@@ -108,6 +131,11 @@ public class TaskServiceImpl implements TaskService {
         log.info("Обновление задачи с id: {}", id);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Задача с id " + id + " не найдена"));
+        User currentUser = securityUtils.getCurrentUser();
+        if (!securityUtils.isAdmin() && currentUser.getId() != task.getAssignee().getId()) {
+            log.warn("Пользователь {} пытается обновить задачу {}", currentUser.getEmail(), task.getTitle());
+            throw new RuntimeException("У вас нет прав на обновление этой задачи");
+        }
         if (dto.getAssigneeId() != null) {
             User assignee = userRepository.findById(dto.getAssigneeId())
                     .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + dto.getAssigneeId() + " не найден"));

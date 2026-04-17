@@ -4,8 +4,10 @@ import com.maxim.taskmanager.exception.UserAlreadyExistsException;
 import com.maxim.taskmanager.exception.UserNotFoundException;
 import com.maxim.taskmanager.model.dto.UserDto.UserCreateDto;
 import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
+import com.maxim.taskmanager.model.entity.Role;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.UserRepository;
+import com.maxim.taskmanager.security.SecurityUtils;
 import com.maxim.taskmanager.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
@@ -23,7 +24,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
 class UserServiceTest {
 
     @Mock
@@ -32,11 +32,15 @@ class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private SecurityUtils securityUtils;
+
     @InjectMocks
     private UserServiceImpl userService;
 
     private UserCreateDto userCreateDto;
     private User user;
+    private User currentUser;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +58,12 @@ class UserServiceTest {
         user.setAge(25);
         user.setEmail("test@mail.com");
         user.setPassword("encodedPassword");
+        user.setRole(Role.USER);
+
+        currentUser = new User();
+        currentUser.setId(1);
+        currentUser.setEmail("test@mail.com");
+        currentUser.setRole(Role.USER);
     }
 
     @Test
@@ -83,6 +93,8 @@ class UserServiceTest {
 
     @Test
     void getUserById_Success() {
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
 
         UserResponseDto result = userService.getUserById(1);
@@ -93,17 +105,35 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserById_NotFound_ThrowsException() {
-        when(userRepository.findById(999)).thenReturn(Optional.empty());
+    void getUserById_UserNotFound_ThrowsException() {
+        // Пользователь ищет себя (id=1), но в БД его нет
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> {
-            userService.getUserById(999);
+            userService.getUserById(1);
         });
     }
 
     @Test
+    void getUserById_OtherUser_ThrowsAccessDenied() {
+        // Пользователь пытается посмотреть чужого (id=2)
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> {
+            userService.getUserById(2);
+        });
+
+        verify(userRepository, never()).findById(2);
+    }
+
+    @Test
     void deleteUser_Success() {
-        when(userRepository.existsById(1)).thenReturn(true);
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
         doNothing().when(userRepository).deleteById(1);
 
         assertDoesNotThrow(() -> userService.deleteUser(1));
@@ -112,7 +142,9 @@ class UserServiceTest {
 
     @Test
     void deleteUser_NotFound_ThrowsException() {
-        when(userRepository.existsById(999)).thenReturn(false);
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
+        when(userRepository.findById(999)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> {
             userService.deleteUser(999);

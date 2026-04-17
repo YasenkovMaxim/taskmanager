@@ -8,6 +8,7 @@ import com.maxim.taskmanager.model.entity.*;
 import com.maxim.taskmanager.repository.ProjectRepository;
 import com.maxim.taskmanager.repository.TaskRepository;
 import com.maxim.taskmanager.repository.UserRepository;
+import com.maxim.taskmanager.security.SecurityUtils;
 import com.maxim.taskmanager.service.impl.TaskServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class TaskServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private SecurityUtils securityUtils;
+
     @InjectMocks
     private TaskServiceImpl taskService;
 
@@ -41,16 +45,30 @@ class TaskServiceTest {
     private Task task;
     private Project project;
     private User assignee;
+    private User owner;
+    private User currentUser;
 
     @BeforeEach
     void setUp() {
+        owner = new User();
+        owner.setId(1);
+        owner.setEmail("owner@mail.com");
+        owner.setRole(Role.USER);
+
         project = new Project();
         project.setId(1);
         project.setName("Тестовый проект");
+        project.setOwner(owner);
 
         assignee = new User();
         assignee.setId(1);
         assignee.setEmail("assignee@mail.com");
+        assignee.setRole(Role.USER);
+
+        currentUser = new User();
+        currentUser.setId(1);
+        currentUser.setEmail("assignee@mail.com");
+        currentUser.setRole(Role.USER);
 
         taskCreateDto = new TaskCreateDto();
         taskCreateDto.setTitle("Тестовая задача");
@@ -72,6 +90,8 @@ class TaskServiceTest {
 
     @Test
     void createTask_Success() {
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
         when(projectRepository.findById(1)).thenReturn(Optional.of(project));
         when(userRepository.findById(1)).thenReturn(Optional.of(assignee));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
@@ -88,6 +108,8 @@ class TaskServiceTest {
 
     @Test
     void createTask_ProjectNotFound_ThrowsException() {
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
         when(projectRepository.findById(999)).thenReturn(Optional.empty());
 
         taskCreateDto.setProjectId(999);
@@ -99,6 +121,8 @@ class TaskServiceTest {
 
     @Test
     void createTask_AssigneeNotFound_ThrowsException() {
+        when(securityUtils.getCurrentUser()).thenReturn(currentUser);
+        when(securityUtils.isAdmin()).thenReturn(false);
         when(projectRepository.findById(1)).thenReturn(Optional.of(project));
         when(userRepository.findById(999)).thenReturn(Optional.empty());
 
