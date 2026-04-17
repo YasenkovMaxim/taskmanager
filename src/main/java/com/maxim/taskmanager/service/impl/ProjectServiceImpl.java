@@ -13,6 +13,8 @@ import com.maxim.taskmanager.repository.UserRepository;
 import com.maxim.taskmanager.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,18 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
         log.info("Проект найден: {}", project.getName());
         return ProjectMapper.toResponseDto(project);
+    }
+
+    @Override
+    public Page<ProjectResponseDto> getAllProjects(Pageable pageable) {
+        log.info("Получение проектов с пагинацией: страница {}, размер {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+        Page<Project> projectsPage = projectRepository.findAll(pageable);
+        log.info("Найдено {} проектов, всего страниц: {}, всего элементов: {}",
+                projectsPage.getNumberOfElements(),
+                projectsPage.getTotalPages(),
+                projectsPage.getTotalElements());
+        return projectsPage.map(ProjectMapper::toResponseDto);
     }
 
     @Override

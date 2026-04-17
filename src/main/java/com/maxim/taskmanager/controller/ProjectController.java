@@ -8,6 +8,10 @@ import com.maxim.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,23 @@ public class ProjectController {
         ProjectResponseDto project = projectService.getProjectById(id);
         log.info("GET projects/{} - проект найден", id);
         return new ResponseEntity<>(project, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProjectResponseDto>> getAllProjects(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        log.info("GET /projects - страница: {}, размер: {}", page, size);
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<ProjectResponseDto> projectsPage = projectService.getAllProjects(pageable);
+        log.info("GET /projects - найдено {} проектов, всего страниц: {}",
+                projectsPage.getNumberOfElements(), projectsPage.getTotalPages());
+        return ResponseEntity.ok(projectsPage);
     }
 
     @PostMapping
