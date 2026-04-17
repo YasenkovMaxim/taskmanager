@@ -13,6 +13,7 @@ import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.ProjectRepository;
 import com.maxim.taskmanager.repository.TaskRepository;
 import com.maxim.taskmanager.repository.UserRepository;
+import com.maxim.taskmanager.security.SecurityUtils;
 import com.maxim.taskmanager.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional
@@ -121,8 +123,12 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void deleteTask(Integer id) {
         log.info("Удаление задачи с id: {}", id);
-        if (!taskRepository.existsById(id)) {
-            throw new TaskNotFoundException("Задача с id " + id + " не найдена");
+        User currentUser = securityUtils.getCurrentUser();
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Задача с id " + id + " не найдена"));
+        if (!securityUtils.isAdmin() && currentUser.getId() != task.getAssignee().getId()) {
+            log.warn("Пользователь {} пытается удалить задачу {}", currentUser.getEmail(), task.getTitle());
+            throw new RuntimeException("У вас нет прав на удаление этой задачи");
         }
         taskRepository.deleteById(id);
         log.info("Задача с id {} удалена", id);

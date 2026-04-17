@@ -39,6 +39,11 @@ public class SecurityConfig {
                                 "/api-docs",
                                 "/api-docs/**"
                         ).permitAll()
+                        .requestMatchers(
+                                "/users/**",
+                                "/projects/**",
+                                "/tasks/**"
+                        ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

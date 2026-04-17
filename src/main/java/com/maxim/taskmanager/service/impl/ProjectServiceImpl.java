@@ -10,6 +10,7 @@ import com.maxim.taskmanager.model.entity.Project;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.ProjectRepository;
 import com.maxim.taskmanager.repository.UserRepository;
+import com.maxim.taskmanager.security.SecurityUtils;
 import com.maxim.taskmanager.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional
@@ -76,8 +78,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public void deleteProject(Integer id) {
         log.info("Удаление проекта с id: {}", id);
-        if (!projectRepository.existsById(id)) {
-            throw new ProjectNotFoundException("Проект с id " + id + " не найден");
+        User currentUser = securityUtils.getCurrentUser();
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException("Проект с id " + id + " не найден"));
+        if (!securityUtils.isAdmin() && currentUser.getId() != project.getOwner().getId()) {
+            log.warn("Пользователь {} пытается удалить проект {}", currentUser.getEmail(), project.getName());
+            throw new RuntimeException("У вас нет прав на удаление этого проекта");
         }
         projectRepository.deleteById(id);
         log.info("Проект с id {} удалён", id);

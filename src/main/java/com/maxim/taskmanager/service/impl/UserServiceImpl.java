@@ -8,9 +8,12 @@ import com.maxim.taskmanager.model.dto.UserDto.UserResponseDto;
 import com.maxim.taskmanager.model.dto.UserDto.UserUpdateDto;
 import com.maxim.taskmanager.model.entity.User;
 import com.maxim.taskmanager.repository.UserRepository;
+import com.maxim.taskmanager.security.JwtAuthenticationFilter;
+import com.maxim.taskmanager.security.SecurityUtils;
 import com.maxim.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.service.SecurityService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityUtils securityUtils;
 
     @Override
     public UserResponseDto getUserById(Integer id) {
@@ -68,13 +72,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Integer id) {
-        log.info("Попытка удаления пользователя с id: {}", id);
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            log.info("Пользователь с id {} удалён", id);
-        } else {
-            throw new UserNotFoundException("Пользователь с id: " + id + " не существует");
+        log.info("Удаление пользователя с id: {}", id);
+        User currentUser = securityUtils.getCurrentUser();
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
+        if (!securityUtils.isAdmin() && currentUser.getId() != userToDelete.getId()) {
+            log.warn("Пользователь {} пытается удалить пользователя {}", currentUser.getEmail(), userToDelete.getEmail());
+            throw new RuntimeException("У вас нет прав на удаление этого пользователя");
         }
+        userRepository.deleteById(id);
+        log.info("Пользователь с id {} удалён", id);
     }
 
     @Override
