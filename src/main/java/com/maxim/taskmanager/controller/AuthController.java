@@ -45,6 +45,6 @@ public class AuthController {
         Integer userId = userService.getUserIdByEmail(loginRequest.getEmail());
         String token = jwtService.generateToken(loginRequest.getEmail(), userId);
         log.info("POST /auth/login - пользователь {} успешно вошёл", loginRequest.getEmail());
-        return ResponseEntity.ok(new AuthResponseDto(token, "Bearer", System.currentTimeMillis() + 86400000));
+        return ResponseEntity.ok(new AuthResponseDto(token, System.currentTimeMillis() + 86400000));
     }
 }
